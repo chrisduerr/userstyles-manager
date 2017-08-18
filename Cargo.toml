@@ -4,3 +4,9 @@ version = "0.1.0"
 authors = ["Christian Dürr <contact@christianduerr.com>"]
 
 [dependencies]
+error-chain = "0.10.0"
+hyper = "0.11.2"
+toml = "0.4.5"
+
+[dev-dependencies]
+tempfile = "2.1.6"
