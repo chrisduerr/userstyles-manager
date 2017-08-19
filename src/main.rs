@@ -19,8 +19,8 @@ mod errors {
     }
 }
 
+use std::io::{Read, Write};
 use std::fs::File;
-use std::io::Read;
 use toml::Value;
 use errors::*;
 
@@ -29,13 +29,15 @@ const API_URI: &str = "https://userstyles.org/api/v1/styles/";
 // Represent a single userstyle
 struct Style {
     id: i64,
+    name: String,
     settings: Vec<Setting>,
 }
 
 impl Style {
-    fn new() -> Style {
+    fn new(name: String) -> Style {
         Style {
             id: -1,
+            name,
             settings: Vec::new(),
         }
     }
@@ -84,7 +86,7 @@ fn load_config(file: &mut File) -> Result<Vec<Style>> {
             .ok_or_else(|| format!("Unable to parse '{}' as table.", style_name))?;
 
         // Iterate over prorerties of style
-        let mut style = Style::new();
+        let mut style = Style::new(style_name.to_owned());
         for (key, val) in style_table {
             if key == "id" {
                 // If key is `id` save it as id
@@ -169,4 +171,22 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
 
     // Return all settings
     Ok(settings_vec)
+}
+
+// Store all userstyle settings in the config
+fn save_style_settings(file: &mut File, styles: Vec<Style>) -> Result<()> {
+    // Create string from styles struct vec
+    let mut output = String::new();
+    for style in styles {
+        output = format!("{}[{}]\nid = {}\n", output, style.name, style.id);
+        for setting in style.settings {
+            output.push_str(&[&setting.key, " = \"", &setting.val, "\"\n"].concat());
+        }
+    }
+
+    // Save styles string to file
+    file.write_all(output.as_bytes())
+        .chain_err(|| "Unable to update config file")?;
+
+    Ok(())
 }

@@ -1,19 +1,7 @@
 #![allow(non_snake_case)]
 
-use std::io::{Seek, SeekFrom};
-use tempfile::tempfile;
-use std::io::Write;
-use std::fs::File;
+use tests::utils::temp_file;
 use load_config;
-
-// Create temp file and seek it so you can read without closing it
-// Like this it is not possible to read multiple times witout re-seeking
-fn temp_file(content: &[u8]) -> File {
-    let mut file = tempfile().expect("Test setup error.");
-    file.write_all(content).expect("Test setup error.");
-    file.seek(SeekFrom::Start(0)).expect("Test setup error.");
-    file
-}
 
 #[test]
 fn with_invalid_utf8__is_utf8_error() {
@@ -114,6 +102,6 @@ fn with_setting__is_struct_with_setting() {
     let result = load_config(&mut file).unwrap();
 
     assert_eq!(result[0].settings.len(), 1);
-    assert_eq!(result[0].settings[0].key, String::from("key"));
-    assert_eq!(result[0].settings[0].val, String::from("val"));
+    assert_eq!(result[0].settings[0].key, "key");
+    assert_eq!(result[0].settings[0].val, "val");
 }
