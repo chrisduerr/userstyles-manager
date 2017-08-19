@@ -11,7 +11,7 @@ fn with_no_settings_or_id__is_file_with_only_name() {
     let mut file = temp_file(b"");
     let styles = vec![Style::new(String::from("style"))];
 
-    save_style_settings(&mut file, styles).unwrap();
+    save_style_settings(&mut file, &styles).unwrap();
 
     file.seek(SeekFrom::Start(0)).expect("Test setup error.");
     let mut content = String::new();
@@ -30,7 +30,7 @@ fn with_id__is_file_with_id() {
         },
     ];
 
-    save_style_settings(&mut file, styles).unwrap();
+    save_style_settings(&mut file, &styles).unwrap();
 
     file.seek(SeekFrom::Start(0)).expect("Test setup error.");
     let mut content = String::new();
@@ -49,25 +49,10 @@ fn with_setting__is_file_with_setting() {
         },
     ];
 
-    save_style_settings(&mut file, styles).unwrap();
+    save_style_settings(&mut file, &styles).unwrap();
 
     file.seek(SeekFrom::Start(0)).expect("Test setup error.");
     let mut content = String::new();
     file.read_to_string(&mut content).unwrap();
     assert_eq!(content, "[style]\nid = -1\nkey = \"val\"\n");
-}
-
-// This uses a style because the file is not cleared when no data has been written
-// For this use it doesn't matter what happens in that case
-#[test]
-fn with_file_not_empty__is_overwritten() {
-    let mut file = temp_file(b"Great Scott!");
-    let styles = vec![Style::new(String::from("style"))];
-
-    save_style_settings(&mut file, styles).unwrap();
-
-    file.seek(SeekFrom::Start(0)).expect("Test setup error.");
-    let mut content = String::new();
-    file.read_to_string(&mut content).unwrap();
-    assert_eq!(content, "[style]\nid = -1\n");
 }

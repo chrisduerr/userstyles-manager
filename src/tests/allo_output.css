@@ -41,7 +41,7 @@ div.style-scope.user-media-message {
 .conversationHeader.wireball-app {
     border-left: 1px rgb(38, 50, 56);
     box-shadow: 0 4px 6px -3px rgba(0, 0, 0, 0);
-    background:  !important;
+    background: #f006a2 !important;
     color: #fafafa;
 }
 
@@ -57,7 +57,7 @@ div.style-scope.user-media-message {
 }
 
 .themedSendButton.active {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 div.flex.style-scope.wireball-app {
@@ -67,14 +67,14 @@ div.flex.style-scope.wireball-app {
 /* new chat button */
 
 #startChatButtonIcon.wireball-app {
-    background: ;
+    background: #f006a2;
 }
 
 #startChatButtonIcon.wireball-app:hover {
     box-shadow: 0 6px 10px 0 rgba(0,0,0,0.3);
 }
 #contactSelectionContainer.wb-new-conversation-view {
-    border-bottom: 2px solid ;
+    border-bottom: 2px solid #f006a2;
 }
 
 #startChatButton.wireball-app {
@@ -84,7 +84,7 @@ div.flex.style-scope.wireball-app {
 div.style-scope.app-header {
     border-right: 0px rgb(38, 50, 56);
     box-shadow: 0 4px 6px -3px rgba(0, 0, 0, 0.2);
-    background-color: ;
+    background-color: #f006a2;
     padding-right: 2px !important;
 }
 
@@ -132,35 +132,35 @@ p.themedText.senderName.style-scope.user-message {
 
 
 paper-tabs.wb-emoji-picker {
-    --paper-tabs-selection-bar-color: ;
+    --paper-tabs-selection-bar-color: #f006a2;
 }
 
 #menu.wb-emoji-picker paper-tab.wb-emoji-picker {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 .emojiVisible.compose-bar #emojiAction.compose-bar, .stickerVisible.compose-bar #stickerAction.compose-bar, .emojiVisible.compose-bar #emojiAction.compose-bar:hover, .stickerVisible.compose-bar #stickerAction.compose-bar:hover, .emojiVisible.compose-bar #emojiAction.compose-bar:focus, .stickerVisible.compose-bar #stickerAction.compose-bar:focus {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 #popout.wb-emoji-picker {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 paper-tab.wb-sticker-picker {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 paper-tab.wb-sticker-picker {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 paper-tabs.wb-sticker-picker {
-    --paper-tabs-selection-bar-color: ;
+    --paper-tabs-selection-bar-color: #f006a2;
 }
 
 #popout.wb-sticker-picker, #store.wb-sticker-picker {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 paper-tabs.style-scope.wb-emoji-picker {
@@ -185,7 +185,7 @@ div.style-scope.wb-sticker-picker {
 
 
 #sets.wb-sticker-set-list .actions.wb-sticker-set-list iron-icon.downloadAction.wb-sticker-set-list {
-    background-color: ;
+    background-color: #f006a2;
 }
 
 #chip.wb-bot-chip {
@@ -213,12 +213,12 @@ div.style-scope.wb-sticker-picker {
 
 
 .content.user-info-panel paper-toggle-button.user-info-panel {
-    --paper-toggle-button-checked-bar-color:  !important;
-    --paper-toggle-button-checked-button-color:  !important;
+    --paper-toggle-button-checked-bar-color: #f006a2 !important;
+    --paper-toggle-button-checked-button-color: #f006a2 !important;
 }
 
 #messageHeaderLayout .avatar-button #avatar {
-    background-color:  !important;
+    background-color: #f006a2 !important;
 }
 
 .avatar-button #icon {
@@ -259,35 +259,35 @@ div.open.style-scope.messages-view {
 }
 
 paper-button.style-scope.wb-confirmation-dialog.keyboard-focus {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 paper-button.style-scope.wb-confirmation-dialog {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 paper-tab.wb-popout-sticker-picker {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 paper-tabs.wb-popout-sticker-picker {
-    --paper-tabs-selection-bar-color:  !important;
+    --paper-tabs-selection-bar-color: #f006a2 !important;
 }
 
 paper-tabs.wb-popout-picker {
-    --paper-tabs-container_-_background:  !important;
+    --paper-tabs-container_-_background: #f006a2 !important;
 }
 
 #copyButton.wb-invite-dialog {
-    background:   !important;
+    background:  #f006a2 !important;
 }
 
 #cancelButton.wb-invite-dialog {
-    color:  !important;
+    color: #f006a2 !important;
 }
 
 .ghp-header {
-    background-color:  !important;
+    background-color: #f006a2 !important;
 }
 
 #sidebar h4:nth-child(1) {
@@ -300,15 +300,15 @@ paper-tabs.wb-popout-picker {
 }
 
 .storeActions .wb-sticker-set-list+ .wb-sticker-set-list .wb-sticker-set-list {
-    fill:  !important;
+    fill: #f006a2 !important;
 }
 
 #switchButton.swap-view {
-    background-color:  !important;
+    background-color: #f006a2 !important;
 }
 
 #dialogFooter.swap-view {
-    background-color:  !important;
+    background-color: #f006a2 !important;
 }
 
 #logout.swap-view {

@@ -26,6 +26,7 @@ use errors::*;
 
 const API_URI: &str = "https://userstyles.org/api/v1/styles/";
 const STYLE_URI: &str = "https://userstyles.org/styles/";
+const CONFIG_FILE: &str = "userstyles.toml";
 
 // Represent a single userstyle
 struct Style {
@@ -60,6 +61,34 @@ impl Setting {
 // Execute `run` using errorchain
 quick_main!(run);
 fn run() -> Result<()> {
+    let mut styles = {
+        // Open readonly config file
+        let mut config = File::open(CONFIG_FILE)
+            .chain_err(|| "Unable to open the config file.")?;
+
+        // Load config
+        load_config(&mut config)?
+    };
+
+    // Update settings if they are empty
+    for style in &mut styles {
+        if style.settings.is_empty() {
+            style.settings = get_style_settings(style.id)?;
+        }
+    }
+
+    // Open config in write mode
+    let mut config = File::create(CONFIG_FILE)
+        .chain_err(|| "Unable to open the config file.")?;
+
+    // Save the updated settings
+    save_style_settings(&mut config, &styles)?;
+
+    // Print all styles to stdout
+    for style in &styles {
+        println!("{}", get_style(style)?);
+    }
+
     Ok(())
 }
 
@@ -175,12 +204,12 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
 }
 
 // Store all userstyle settings in the config
-fn save_style_settings(file: &mut File, styles: Vec<Style>) -> Result<()> {
+fn save_style_settings(file: &mut File, styles: &[Style]) -> Result<()> {
     // Create string from styles struct vec
     let mut output = String::new();
     for style in styles {
         output = format!("{}[{}]\nid = {}\n", output, style.name, style.id);
-        for setting in style.settings {
+        for setting in &style.settings {
             output.push_str(&[&setting.key, " = \"", &setting.val, "\"\n"].concat());
         }
     }
@@ -194,18 +223,24 @@ fn save_style_settings(file: &mut File, styles: Vec<Style>) -> Result<()> {
 
 // Get the CSS for a style
 fn get_style(style: &Style) -> Result<String> {
-    // Construct request url
+    // Construct request url and data
     let mut settings_str = String::new();
     for setting in &style.settings {
         settings_str = format!("{}{}={}&", settings_str, setting.key, setting.val);
     }
     let _ = settings_str.pop();
 
-    let uri = format!("{}{}.css?{}", STYLE_URI, style.id, settings_str);
+    let uri = format!("{}{}.css?", STYLE_URI, style.id);
 
     // Send request
-    let mut response = reqwest::get(&uri)
-        .chain_err(|| "Unable to get css from userstyles.")?;
+    let client = reqwest::Client::new()
+        .chain_err(|| "Unable to find TLS backend.")?;
+    let mut response = client
+        .post(&uri)
+        .chain_err(|| "Unable to create post request.")?
+        .body(settings_str)
+        .send()
+        .chain_err(|| "Unable to send style request.")?;
 
     // Return response
     let mut response_text = String::new();
