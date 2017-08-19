@@ -167,6 +167,7 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
     // Convert to json
     let json = json::parse(&response_text)?;
 
+    // Check if style id is valid and gave a response
     if !json["not_found"].is_null() || !json["error"].is_null() {
         Err(format!("Style '{}' does not exist.", style_id))?;
     }
@@ -177,20 +178,21 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
     // Iterate over settings
     for setting in settings.members() {
         // Get install key
-        let install_key = [
-            "ik-",
+        let install_key = format!(
+            "ik-{}",
             setting["install_key"]
                 .as_str()
-                .ok_or_else(|| "Unable to parse install key.")?,
-        ].concat();
+                .ok_or_else(|| "Unable to parse install key.")?
+        );
 
-        // Set type in comment
+        // Create comment with type of setting
         let setting_type = setting["setting_type"].as_str().unwrap_or("");
         let mut comment = format!(" # {}:", setting_type);
 
         // Get default value and comment for it
         let mut default_value = String::new();
         for setting_option in setting["style_setting_options"].members() {
+            // Get key of option
             let option_key = format!(
                 "ik-{}",
                 setting_option["install_key"]
@@ -198,7 +200,7 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
                     .ok_or_else(|| "Unable to parse default value")?
             );
 
-            // Add option to comment
+            // Add this option to comment
             {
                 let option_comment = if setting_type == "text" || setting_type == "color" {
                     format!("'{}'", setting_option["value"].as_str().unwrap_or(""))
@@ -208,18 +210,14 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
                 comment.push_str(&[" ", &option_comment].concat());
             }
 
-            // Get default
+            // Set the default
             if setting_option["default"] == true {
                 default_value = option_key;
             }
         }
 
         // Create setting struct and add it to vec
-        settings_vec.push(Setting::new(
-            install_key.to_owned(),
-            default_value,
-            comment.to_owned(),
-        ));
+        settings_vec.push(Setting::new(install_key, default_value, comment));
     }
 
     // Return all settings
@@ -251,7 +249,7 @@ fn save_style_settings(file: &mut File, styles: &[Style]) -> Result<()> {
 
 // Get the CSS for a style
 fn get_style(style: &Style) -> Result<String> {
-    // Construct request url and data
+    // Construct data and request uri
     let mut settings_str = String::new();
     for setting in &style.settings {
         settings_str = format!("{}{}={}&", settings_str, setting.key, setting.val);
