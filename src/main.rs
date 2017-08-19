@@ -25,6 +25,7 @@ use toml::Value;
 use errors::*;
 
 const API_URI: &str = "https://userstyles.org/api/v1/styles/";
+const STYLE_URI: &str = "https://userstyles.org/styles/";
 
 // Represent a single userstyle
 struct Style {
@@ -189,4 +190,27 @@ fn save_style_settings(file: &mut File, styles: Vec<Style>) -> Result<()> {
         .chain_err(|| "Unable to update config file")?;
 
     Ok(())
+}
+
+// Get the CSS for a style
+fn get_style(style: &Style) -> Result<String> {
+    // Construct request url
+    let mut settings_str = String::new();
+    for setting in &style.settings {
+        settings_str = format!("{}{}={}&", settings_str, setting.key, setting.val);
+    }
+    let _ = settings_str.pop();
+
+    let uri = format!("{}{}.css?{}", STYLE_URI, style.id, settings_str);
+
+    // Send request
+    let mut response = reqwest::get(&uri)
+        .chain_err(|| "Unable to get css from userstyles.")?;
+
+    // Return response
+    let mut response_text = String::new();
+    response
+        .read_to_string(&mut response_text)
+        .chain_err(|| "Response not valid utf-8.")?;
+    Ok(response_text)
 }
