@@ -45,7 +45,9 @@ fn with_setting__is_file_with_setting() {
         Style {
             name: String::from("style"),
             id: -1,
-            settings: vec![Setting::new(String::from("key"), String::from("val"))],
+            settings: vec![
+                Setting::new(String::from("key"), String::from("val"), String::new()),
+            ],
         },
     ];
 
@@ -55,4 +57,25 @@ fn with_setting__is_file_with_setting() {
     let mut content = String::new();
     file.read_to_string(&mut content).unwrap();
     assert_eq!(content, "[style]\nid = -1\nkey = \"val\"\n");
+}
+
+#[test]
+fn with_comment__is_file_with_comment() {
+    let mut file = temp_file(b"");
+    let styles = vec![
+        Style {
+            name: String::new(),
+            id: -1,
+            settings: vec![
+                Setting::new(String::new(), String::new(), String::from("comment")),
+            ],
+        },
+    ];
+
+    save_style_settings(&mut file, &styles).unwrap();
+
+    file.seek(SeekFrom::Start(0)).expect("Test setup error.");
+    let mut content = String::new();
+    file.read_to_string(&mut content).unwrap();
+    assert_eq!(content, "[]\nid = -1\n = \"\"comment\n");
 }

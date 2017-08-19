@@ -13,8 +13,10 @@ mod tests;
 mod errors {
     error_chain! {
         foreign_links {
+            Reqwest(::reqwest::Error);
             Toml(::toml::de::Error);
             Io(::std::io::Error);
+            Json(::json::Error);
         }
     }
 }
@@ -49,11 +51,12 @@ impl Style {
 struct Setting {
     key: String,
     val: String,
+    comment: String,
 }
 
 impl Setting {
-    fn new(key: String, val: String) -> Setting {
-        Setting { key, val }
+    fn new(key: String, val: String, comment: String) -> Setting {
+        Setting { key, val, comment }
     }
 }
 
@@ -64,7 +67,7 @@ fn run() -> Result<()> {
     let mut styles = {
         // Open readonly config file
         let mut config = File::open(CONFIG_FILE)
-            .chain_err(|| "Unable to open the config file.")?;
+            .chain_err(|| "Unable to read the config file.")?;
 
         // Load config
         load_config(&mut config)?
@@ -79,7 +82,7 @@ fn run() -> Result<()> {
 
     // Open config in write mode
     let mut config = File::create(CONFIG_FILE)
-        .chain_err(|| "Unable to open the config file.")?;
+        .chain_err(|| "Unable to write the config file.")?;
 
     // Save the updated settings
     save_style_settings(&mut config, &styles)?;
@@ -99,8 +102,7 @@ fn load_config(file: &mut File) -> Result<Vec<Style>> {
 
     // Load file
     let mut file_content = String::new();
-    file.read_to_string(&mut file_content)
-        .chain_err(|| "Config file is not valid UTF-8.")?;
+    file.read_to_string(&mut file_content)?;
 
     // Parse file as table
     let table_val = file_content
@@ -133,7 +135,7 @@ fn load_config(file: &mut File) -> Result<Vec<Style>> {
                         style_name
                     )
                 })?;
-                let setting = Setting::new(key.to_owned(), val.to_owned());
+                let setting = Setting::new(key.to_owned(), val.to_owned(), String::new());
                 style.settings.push(setting);
             }
         }
@@ -160,12 +162,10 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
     let uri = &[API_URI, &style_id.to_string()].concat();
     let mut response = reqwest::get(uri).chain_err(|| "Web Request failed.")?;
     let mut response_text = String::new();
-    response
-        .read_to_string(&mut response_text)
-        .chain_err(|| "Invalid utf-8.")?;
+    response.read_to_string(&mut response_text)?;
 
     // Convert to json
-    let json = json::parse(&response_text).chain_err(|| "Invalid json.")?;
+    let json = json::parse(&response_text)?;
 
     if !json["not_found"].is_null() || !json["error"].is_null() {
         Err(format!("Style '{}' does not exist.", style_id))?;
@@ -177,25 +177,48 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
     // Iterate over settings
     for setting in settings.members() {
         // Get install key
-        let json_str = setting["install_key"]
-            .as_str()
-            .ok_or_else(|| "Unable to parse install key.")?;
-        let install_key = ["ik-", json_str].concat();
+        let install_key = [
+            "ik-",
+            setting["install_key"]
+                .as_str()
+                .ok_or_else(|| "Unable to parse install key.")?,
+        ].concat();
 
-        // Get default value
-        let mut default_value = "";
+        // Set type in comment
+        let setting_type = setting["setting_type"].as_str().unwrap_or("");
+        let mut comment = format!(" # {}:", setting_type);
+
+        // Get default value and comment for it
+        let mut default_value = String::new();
         for setting_option in setting["style_setting_options"].members() {
-            if setting_option["default"] == true {
-                default_value = setting_option["value"]
+            let option_key = format!(
+                "ik-{}",
+                setting_option["install_key"]
                     .as_str()
-                    .ok_or_else(|| "Unable to parse default value")?;
+                    .ok_or_else(|| "Unable to parse default value")?
+            );
+
+            // Add option to comment
+            {
+                let option_comment = if setting_type == "text" || setting_type == "color" {
+                    format!("'{}'", setting_option["value"].as_str().unwrap_or(""))
+                } else {
+                    option_key.clone()
+                };
+                comment.push_str(&[" ", &option_comment].concat());
+            }
+
+            // Get default
+            if setting_option["default"] == true {
+                default_value = option_key;
             }
         }
 
         // Create setting struct and add it to vec
         settings_vec.push(Setting::new(
             install_key.to_owned(),
-            default_value.to_owned(),
+            default_value,
+            comment.to_owned(),
         ));
     }
 
@@ -210,13 +233,18 @@ fn save_style_settings(file: &mut File, styles: &[Style]) -> Result<()> {
     for style in styles {
         output = format!("{}[{}]\nid = {}\n", output, style.name, style.id);
         for setting in &style.settings {
-            output.push_str(&[&setting.key, " = \"", &setting.val, "\"\n"].concat());
+            output = format!(
+                "{}{} = \"{}\"{}\n",
+                output,
+                setting.key,
+                setting.val,
+                setting.comment
+            );
         }
     }
 
     // Save styles string to file
-    file.write_all(output.as_bytes())
-        .chain_err(|| "Unable to update config file")?;
+    file.write_all(output.as_bytes())?;
 
     Ok(())
 }
@@ -233,19 +261,15 @@ fn get_style(style: &Style) -> Result<String> {
     let uri = format!("{}{}.css?", STYLE_URI, style.id);
 
     // Send request
-    let client = reqwest::Client::new()
-        .chain_err(|| "Unable to find TLS backend.")?;
+    let client = reqwest::Client::new()?;
     let mut response = client
-        .post(&uri)
-        .chain_err(|| "Unable to create post request.")?
+        .post(&uri)?
         .body(settings_str)
         .send()
-        .chain_err(|| "Unable to send style request.")?;
+        .chain_err(|| "Web Request failed.")?;
 
     // Return response
     let mut response_text = String::new();
-    response
-        .read_to_string(&mut response_text)
-        .chain_err(|| "Response not valid utf-8.")?;
+    response.read_to_string(&mut response_text)?;
     Ok(response_text)
 }

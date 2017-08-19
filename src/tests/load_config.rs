@@ -10,7 +10,7 @@ fn with_invalid_utf8__is_utf8_error() {
     let result = load_config(&mut file);
 
     if let Err(e) = result {
-        assert_eq!(e.description(), "Config file is not valid UTF-8.");
+        assert_eq!(e.description(), "stream did not contain valid UTF-8");
     } else {
         panic!("No error.");
     }

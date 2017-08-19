@@ -13,7 +13,11 @@ fn with_allo_style__is_allo_style_css() {
         id: 146771,
 
         settings: vec![
-            Setting::new(String::from("ik-ACCENTCOLOR"), String::from("#f006a2")),
+            Setting::new(
+                String::from("ik-ACCENTCOLOR"),
+                String::from("#f006a2"),
+                String::new(),
+            ),
         ],
     };
     let mut expected = String::new();
