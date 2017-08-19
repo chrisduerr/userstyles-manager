@@ -5,7 +5,8 @@ authors = ["Christian Dürr <contact@christianduerr.com>"]
 
 [dependencies]
 error-chain = "0.10.0"
-hyper = "0.11.2"
+reqwest = "0.7.2"
+json = "0.11.9"
 toml = "0.4.5"
 
 [dev-dependencies]
