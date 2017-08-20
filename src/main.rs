@@ -60,6 +60,15 @@ impl Setting {
     }
 }
 
+// Simple helper for searching Vec
+fn find_settings_val(settings: &[Setting], key: &str) -> Option<String> {
+    for setting in settings {
+        if setting.key == key {
+            return Some(setting.val.clone());
+        }
+    }
+    None
+}
 
 // Execute `run` using errorchain
 quick_main!(run);
@@ -74,10 +83,8 @@ fn run() -> Result<()> {
     };
 
     // Update settings if they are empty
-    for style in &mut styles {
-        if style.settings.is_empty() {
-            style.settings = get_style_settings(style.id)?;
-        }
+    for mut style in &mut styles {
+        update_style_settings(&mut style)?;
     }
 
     // Open config in write mode
@@ -153,13 +160,10 @@ fn load_config(file: &mut File) -> Result<Vec<Style>> {
     Ok(styles)
 }
 
-// Get all the default settings for a userstyle
-fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
-    // Vec for return
-    let mut settings_vec = Vec::new();
-
+// Update all the settings for a userstyle
+fn update_style_settings(style: &mut Style) -> Result<()> {
     // Send request to api
-    let uri = &[API_URI, &style_id.to_string()].concat();
+    let uri = &[API_URI, &style.id.to_string()].concat();
     let mut response = reqwest::get(uri).chain_err(|| "Web Request failed.")?;
     let mut response_text = String::new();
     response.read_to_string(&mut response_text)?;
@@ -169,11 +173,14 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
 
     // Check if style id is valid and gave a response
     if !json["not_found"].is_null() || !json["error"].is_null() {
-        Err(format!("Style '{}' does not exist.", style_id))?;
+        Err(format!("Style '{}' does not exist.", style.id))?;
     }
 
     // Get settings
     let settings = &json["style_settings"];
+
+    // Store current settings in temp vec that will be discarded
+    let old_settings: Vec<Setting> = style.settings.drain(..).collect();
 
     // Iterate over settings
     for setting in settings.members() {
@@ -216,12 +223,19 @@ fn get_style_settings(style_id: i64) -> Result<Vec<Setting>> {
             }
         }
 
+        // Reuse old setting if it already existed
+        if let Some(val) = find_settings_val(&old_settings, &install_key) {
+            default_value = val;
+        }
+
         // Create setting struct and add it to vec
-        settings_vec.push(Setting::new(install_key, default_value, comment));
+        style
+            .settings
+            .push(Setting::new(install_key, default_value, comment));
     }
 
-    // Return all settings
-    Ok(settings_vec)
+    // Everything updated
+    Ok(())
 }
 
 // Store all userstyle settings in the config

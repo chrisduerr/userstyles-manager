@@ -1,35 +1,39 @@
 @-moz-document domain("allo.google.com") {
 div.themedIncomingBubble.bubble.style-scope.user-text-message {
     border-radius: 4px !important;
-    color: #263238;
-    background-color: #ffffff;
+    color: #263238 !important;
+    background-color: #ffffff !important;
 }
 paper-item.suggestion.bubble.themedSmartReply.style-scope.suggestion-message {
-    border-radius: 4px;
-    background-color: #f5f7f8;
-    border-color: #f5f7f8;
+    border-radius: 4px !important;
+    background-color: #f5f7f8 !important;
+    border-color: #f5f7f8 !important;
 }
 
 paper-item.suggestion.bubble.themedSmartReply.style-scope.suggestion-message:hover {
-    background-color: #cfd8dc;
-    border-color: #cfd8dc;
+    background-color: #cfd8dc !important;
+    border-color: #cfd8dc !important;
 }
 
 paper-item.suggestion.bubble.themedSmartReply.style-scope.suggestion-message:focus {
-    background-color: #c0c8cb;
-    border-color: #c0c8cb;
+    background-color: #c0c8cb !important;
+    border-color: #c0c8cb !important;
 }
 
 div.themedOutgoingBubble.bubble.style-scope.user-text-message {
-    border-radius: 4px;
-    background-color: #cfd8dc;
-    color: #263238;
+    border-radius: 4px !important;
+    background-color: #cfd8dc !important;
+    color: #263238 !important;
 }
+
+/* conversation background */
 scrolling-messages-list.style-scope.messages-view {
-    background-color: #eceff1;
+    background-color: #eceff1 !important;
+        background-image:  none !important;
 }
+
 p.style-scope.suggestion-message {
-    color: #263238;
+    color: #263238 !important;
 }
 div.style-scope.compose-bar {
     border-radius: 4px !important;
@@ -39,10 +43,10 @@ div.style-scope.user-media-message {
 }
 
 .conversationHeader.wireball-app {
-    border-left: 1px rgb(38, 50, 56);
-    box-shadow: 0 4px 6px -3px rgba(0, 0, 0, 0);
+    border-left: 1px rgb(38, 50, 56) !important;
+    box-shadow: 0 4px 6px -3px rgba(0, 0, 0, 0) !important;
     background: #f006a2 !important;
-    color: #fafafa;
+    color: #fafafa !important;
 }
 
 .themedDeliveryIconRead {
@@ -64,45 +68,70 @@ div.flex.style-scope.wireball-app {
     color: #fafafa !important;
 }
 
+#conversationName {
+    background-color: #f006a2
+}
+
 /* new chat button */
 
 #startChatButtonIcon.wireball-app {
-    background: #f006a2;
+    background: #f006a2 !important;
 }
 
 #startChatButtonIcon.wireball-app:hover {
-    box-shadow: 0 6px 10px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 6px 10px 0 rgba(0,0,0,0.3) !important;
 }
 #contactSelectionContainer.wb-new-conversation-view {
-    border-bottom: 2px solid #f006a2;
+    border-bottom: 2px solid #f006a2 !important;
 }
 
 #startChatButton.wireball-app {
     background: #ffffff !important;
 }
 
-div.style-scope.app-header {
-    border-right: 0px rgb(38, 50, 56);
-    box-shadow: 0 4px 6px -3px rgba(0, 0, 0, 0.2);
-    background-color: #f006a2;
+#conversationBackButton #icon {
+    background-color: #f006a2 !important;
+}
+
+div.style-scope.app-header > app-toolbar::before {
+    content: "";
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,0));
+    position: absolute;
+    z-index: 997;
+    top: 68px;
+    left: 0;
+    pointer-events: none;
+}
+
+div.style-scope.app-header > app-toolbar {
+        background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPiAgICA8cGF0aCBkPSJNMyAxOGgxOHYtMkgzdjJ6bTAtNWgxOHYtMkgzdjJ6bTAtN3YyaDE4VjZIM3oiLz48L3N2Zz4=) !important;
+    background-repeat: no-repeat !important;
+    background-position: 29px 22px !important; 
+    border-right: 0 rgb(38, 50, 56) !important;
+    background-color: #f006a2 !important;
     padding-right: 2px !important;
+    width: calc(100% + 1px);
 }
 
 #conversationsViewContainer .app-header {
-    background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPiAgICA8cGF0aCBkPSJNMyAxOGgxOHYtMkgzdjJ6bTAtNWgxOHYtMkgzdjJ6bTAtN3YyaDE4VjZIM3oiLz48L3N2Zz4=) !important;
-    background-repeat: no-repeat;
-    background-position: 29px 22px; 
-    padding-right: 10px !important;
-    z-index: 1 !important;
 }
 
 #allo-logo.wireball-app {
-    --iron-icon-fill-color: #fafafa;
-    padding-left: 58px;
+    --iron-icon-fill-color: #fafafa !important;
+    padding-left: 58px !important;
 }
 
 #arrowBack #icon {
-    fill: #fafafa !important;  
+    fill: #fafafa !important;
+    background-color: #f006a2 !important;
+}
+
+
+#arrowBack #icon:hover {
+    fill: #fafafa !important;
+    background-color: none !important;
 }
 
 .conversation_item.selected.conversations-view, .conversation_item.conversations-view:hover {
@@ -110,7 +139,7 @@ div.style-scope.app-header {
 }
 
 div.flex.style-scope.wb-new-conversation-view {
-    color: #fafafa;
+    color: #fafafa !important;
 }
 
 relative-time.themedText.timestampBanner.style-scope.messages-view {
@@ -132,7 +161,7 @@ p.themedText.senderName.style-scope.user-message {
 
 
 paper-tabs.wb-emoji-picker {
-    --paper-tabs-selection-bar-color: #f006a2;
+    --paper-tabs-selection-bar-color: #f006a2 !important;
 }
 
 #menu.wb-emoji-picker paper-tab.wb-emoji-picker {
@@ -156,7 +185,7 @@ paper-tab.wb-sticker-picker {
 }
 
 paper-tabs.wb-sticker-picker {
-    --paper-tabs-selection-bar-color: #f006a2;
+    --paper-tabs-selection-bar-color: #f006a2 !important;
 }
 
 #popout.wb-sticker-picker, #store.wb-sticker-picker {
@@ -172,43 +201,45 @@ div.style-scope.wb-emoji-picker {
 }
 
 paper-tabs.style-scope.wb-sticker-picker {
-    background-color: #f8f8f8;
+    background-color: #f8f8f8 !important;
 }
 
 wb-sticker-picker.style-scope.compose-bar.iron-selected {
-    background-color: #f8f8f8;
+    background-color: #f8f8f8 !important;
 }
 
 div.style-scope.wb-sticker-picker {
-    background-color: #f8f8f8;
+    background-color: #f8f8f8 !important;
 }
 
 
 #sets.wb-sticker-set-list .actions.wb-sticker-set-list iron-icon.downloadAction.wb-sticker-set-list {
-    background-color: #f006a2;
+    background-color: #f006a2 !important;
 }
 
 #chip.wb-bot-chip {
-    border-radius: 4px;
+    border-radius: 4px !important;
 } 
 
 
 #conversationsViewContainer .wireball-app .wireball-app #avatar {
-    background-color: none;
+    background-color: none !important;
     background-image: none !important;
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: center; 
-    box-shadow: none;
-    margin-left: -319px;
+    background-size: 20px 20px !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important; 
+    box-shadow: none !important;
+    margin-left: -364px !important;
 }
 
 
 #messageHeaderLayout .avatar-button #avatar {
-    background-color: none;
+    background-color: none !important;
     background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPiAgICA8cGF0aCBkPSJNMTIgOGMxLjEgMCAyLS45IDItMnMtLjktMi0yLTItMiAuOS0yIDIgLjkgMiAyIDJ6bTAgMmMtMS4xIDAtMiAuOS0yIDJzLjkgMiAyIDIgMi0uOSAyLTItLjktMi0yLTJ6bTAgNmMtMS4xIDAtMiAuOS0yIDJzLjkgMiAyIDIgMi0uOSAyLTItLjktMi0yLTJ6Ii8+PC9zdmc+) !important;
-    background-size: 26px;
-    background-repeat: no-repeat;
+    background-size: 26px !important;
+    background-repeat: no-repeat !important;
+    width: 40px;
+    transform: translateX(-30px);
 }
 
 
@@ -222,15 +253,15 @@ div.style-scope.wb-sticker-picker {
 }
 
 .avatar-button #icon {
-    visibility: hidden;
+    visibility: hidden !important;
 }
 
 div.header.style-scope.user-info-panel {
-    height: 68px;
+    height: 68px !important;
 }
 
 ul.style-scope.user-info-panel:after {
-    content: 'Theme by Linked Designs';
+    content: 'Theme by Linked Designs' !important;
 }
 
 p.themedTombstone.tombstone.style-scope.tombstone-message {
@@ -238,8 +269,8 @@ p.themedTombstone.tombstone.style-scope.tombstone-message {
 }
 
 p.themedTombstone.tombstone.style-scope.tombstone-message:after {
-    content: ' MD+ is incompatible with Allo themes!';
-    font-size: 12px;
+    content: ' MD+ is incompatible with Allo themes!' !important;
+    font-size: 12px !important;
 }
 
 h3.style-scope.wb-lightbox {
@@ -255,7 +286,7 @@ relative-time.style-scope.wb-lightbox {
 }
 
 div.open.style-scope.messages-view {
-    box-shadow: 1px 0 4px 1px rgba(0,0,0,.12);
+    box-shadow: 1px 0 4px 1px rgba(0,0,0,.12) !important;
 }
 
 paper-button.style-scope.wb-confirmation-dialog.keyboard-focus {
@@ -291,11 +322,11 @@ paper-tabs.wb-popout-picker {
 }
 
 #sidebar h4:nth-child(1) {
-    font-size: 0px !important;
+    font-size: 0 !important;
 }
 
 #sidebar h4:nth-child(1):After {
-    content: ' MD+ is incompatible with Allo themes!';
+    content: ' MD+ is incompatible with Allo themes!' !important;
     font-size: 14px !important;
 }
 
@@ -312,6 +343,11 @@ paper-tabs.wb-popout-picker {
 }
 
 #logout.swap-view {
-    color: rgb(250,250,250);
+    color: rgb(250,250,250) !important;
 }
+
+.close {    
+    background-color: #f006a2 !important;
+}
+
 }
